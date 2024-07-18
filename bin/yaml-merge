@@ -3,9 +3,17 @@
 'use strict';
 
 const yamlMerge = require('../index.js');
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
 
-const files = process.argv
-  .slice(2)
-const outputFile = yamlMerge(...files);
+const argv = yargs(hideBin(process.argv))
+    .option('overwriteArr', {
+      alias: 'o',
+      type: 'boolean',
+      description: 'overwrite arrays instead of concatenating them'
+    })
+    .argv;
+
+const outputFile = yamlMerge(...argv._, { overwriteArr: argv.overwriteArr });
 
 process.stdout.write(outputFile);

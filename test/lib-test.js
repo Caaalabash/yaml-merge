@@ -64,6 +64,17 @@ describe('merge logic', function () {
     ` + '\n'
     );
   });
+
+  it('overwriting arrays instead of concatenates them', function () {
+    const output = merge(...fixtureFiles('arrays/a.yml', 'arrays/b.yml'), { overwriteArr: true });
+
+    expect(output).to.equal(
+      stripIndent`
+      key:
+        - b
+    ` + '\n'
+    );
+  });
 });
 
 describe('glob logic', function () {

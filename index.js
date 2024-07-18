@@ -13,18 +13,24 @@ function readAsJSON(fileName) {
 }
 
 /**
- * Merge the given YAML file names into a single YAML document
+ * Merges the given YAML file names into a single YAML document.
  *
- * @param {array} from the file paths to read from
- * @return {string} the output YAML file
+ * @param {...string|object} from - The file paths to read from, followed optionally by an options object.
+ * @param {object} [options] - Options for merging behavior.
+ * @param {boolean} [options.overwriteArr=false] - Whether to overwrite arrays instead of concatenating them.
+ * @returns {string} The output YAML string.
  */
 function yamlMerge(...from) {
+  const options = typeof from[from.length - 1] === 'object' ? from.pop() : {};
   const files = from
     .reduce((arr, el) => arr.concat(glob.sync(el)), [])
     .map((path) => readAsJSON(path));
 
   const outputJSON = _.mergeWith({}, ...files, (objValue, srcValue) => {
     if (Array.isArray(objValue) && Array.isArray(srcValue)) {
+      if (options.overwriteArr) {
+        return srcValue;
+      }
       return [...objValue, ...srcValue];
     }
 
